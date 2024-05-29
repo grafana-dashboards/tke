@@ -1,0 +1,34 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: monitoring
+
+generatorOptions:
+  disableNameSuffixHash: true
+  labels:
+    grafana_dashboard: "1"
+commonAnnotations:
+  grafana_folder: "TKE"
+
+configMapGenerator:
+  - files:
+      - dashboards/tke-workload-on-super-node.json
+    name: dashboard-tke-workload-on-super-node
+  - files:
+      - dashboards/tke-pvc.json
+    name: dashboard-tke-pvc
+  - files:
+      - dashboards/tke-node.json
+    name: dashboard-tke-node
+  - files:
+      - dashboards/tke-pod.json
+    name: dashboard-tke-pod
+  - files:
+      - dashboards/tke-super-node.json
+    name: dashboard-tke-super-node
+  - files:
+      - dashboards/tke-pod-on-node.json
+    name: dashboard-tke-pod-on-node
+  - files:
+      - dashboards/tke-cluster.json
+    name: dashboard-tke-cluster
