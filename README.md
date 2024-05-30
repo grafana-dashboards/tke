@@ -17,6 +17,6 @@ sidecar:
 ## Usage
 
 ```bash
-git clone git@github.com:grafana-dashboards/tke.git 
-kubectl apply -k ./tke
+git clone --depth 1 git@github.com:grafana-dashboards/tke.git grafana-dashboards-tke
+kubectl apply -k ./grafana-dashboards-tke
 ```
