@@ -1,6 +1,6 @@
 # grafana-dashboards-tke
 
-Grafana Dashboards for TKE(TencentCloud Kubernetes Engine).
+Grafana Dashboards for TKE(Tencent Kubernetes Engine).
 
 ## Grafana installation recommendations
 
