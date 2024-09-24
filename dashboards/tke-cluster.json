@@ -235,6 +235,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -246,6 +247,7 @@
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
+            "axisSoftMin": 2,
             "barAlignment": 0,
             "drawStyle": "line",
             "fillOpacity": 0,
@@ -273,6 +275,7 @@
             }
           },
           "mappings": [],
+          "noValue": "无 CPU 限流",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -285,10 +288,30 @@
                 "value": 80
               }
             ]
-          },
-          "unit": "none"
+          }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byValue",
+              "options": {
+                "op": "gte",
+                "reducer": "allIsZero",
+                "value": 0
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": true,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -296,7 +319,7 @@
         "x": 0,
         "y": 9
       },
-      "id": 28,
+      "id": 55,
       "options": {
         "legend": {
           "calcs": [],
@@ -305,8 +328,8 @@
           "showLegend": true
         },
         "tooltip": {
-          "mode": "single",
-          "sort": "none"
+          "mode": "multi",
+          "sort": "desc"
         }
       },
       "targets": [
@@ -316,13 +339,13 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "node_procs_running{cluster=~\"$cluster\"}",
-          "legendFormat": "{{instance}}",
+          "expr": "sum(irate(container_cpu_cfs_throttled_seconds_total[$__rate_interval])) by (namespace, pod)",
+          "legendFormat": "{{namespace}}/{{pod}}",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "进程数量",
+      "title": "CPU 限流",
       "type": "timeseries"
     },
     {
@@ -421,12 +444,107 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 17
+      },
+      "id": 28,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "node_procs_running{cluster=~\"$cluster\"}",
+          "legendFormat": "{{instance}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "进程数量",
+      "type": "timeseries"
+    },
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 17
+        "y": 25
       },
       "id": 54,
       "panels": [],
@@ -497,7 +615,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 18
+        "y": 26
       },
       "id": 51,
       "options": {
@@ -534,7 +652,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 26
+        "y": 34
       },
       "id": 39,
       "panels": [],
@@ -605,7 +723,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 27
+        "y": 35
       },
       "id": 41,
       "options": {
@@ -700,7 +818,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 27
+        "y": 35
       },
       "id": 42,
       "options": {
@@ -795,7 +913,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 35
+        "y": 43
       },
       "id": 32,
       "options": {
@@ -890,7 +1008,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 35
+        "y": 43
       },
       "id": 43,
       "options": {
@@ -927,7 +1045,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 43
+        "y": 51
       },
       "id": 37,
       "panels": [],
@@ -998,7 +1116,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 44
+        "y": 52
       },
       "id": 30,
       "options": {
@@ -1093,7 +1211,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 44
+        "y": 52
       },
       "id": 31,
       "options": {
@@ -1189,7 +1307,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 52
+        "y": 60
       },
       "id": 33,
       "options": {
@@ -1226,7 +1344,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 60
+        "y": 68
       },
       "id": 49,
       "panels": [],
@@ -1297,7 +1415,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 61
+        "y": 69
       },
       "id": 47,
       "options": {
@@ -1368,7 +1486,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 61
+        "y": 69
       },
       "id": 45,
       "options": {
@@ -1383,7 +1501,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "10.4.0",
+      "pluginVersion": "11.1.5",
       "targets": [
         {
           "datasource": {
@@ -1490,7 +1608,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 69
+        "y": 77
       },
       "id": 52,
       "options": {
@@ -1519,124 +1637,6 @@
         }
       ],
       "title": "异常 Pod 统计",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "axisSoftMin": 2,
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "noValue": "无 CPU 限流",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byValue",
-              "options": {
-                "op": "gte",
-                "reducer": "allIsZero",
-                "value": 0
-              }
-            },
-            "properties": [
-              {
-                "id": "custom.hideFrom",
-                "value": {
-                  "legend": true,
-                  "tooltip": true,
-                  "viz": true
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 69
-      },
-      "id": 55,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "expr": "sum(irate(container_cpu_cfs_throttled_seconds_total[$__rate_interval])) by (namespace, pod)",
-          "legendFormat": "{{namespace}}/{{pod}}",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "CPU 限流",
       "type": "timeseries"
     }
   ],
